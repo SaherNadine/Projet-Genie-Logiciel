@@ -144,19 +144,19 @@ public class UnitTests {
     @Test
     @DisplayName("Test DWARF with Holy Elixir")
     void testDwarfWithHolyElixir() {
-            player p5 = new player("walaa", "Grognak le barbare", "DWARF", 100, new ArrayList<>());
-            p5.currenthealthpoints = 1;
-            p5.healthpoints = 4;
-            UpdatePlayer up5= new UpdatePlayer();
-            up5.majFinDeTour(p5);
-            assertThat(p5.getAvatarClass(), is("DWARF"));
+        player p5 = new player("walaa", "Grognak le barbare", "DWARF", 100, new ArrayList<>());
+        p5.currenthealthpoints = 1;
+        p5.healthpoints = 4;
+        UpdatePlayer up5= new UpdatePlayer();
+        up5.majFinDeTour(p5);
+        assertThat(p5.getAvatarClass(), is("DWARF"));
     
-            player p6 = new player("Assia", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
-            p6.currenthealthpoints = 1;
-            p6.healthpoints = 4;
-            UpdatePlayer up6= new UpdatePlayer();
-            up6.majFinDeTour(p6);
-            assertThat(p6.getAvatarClass(), is("ADVENTURER"));
+        player p6 = new player("Assia", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
+        p6.currenthealthpoints = 1;
+        p6.healthpoints = 4;
+        UpdatePlayer up6= new UpdatePlayer();
+        up6.majFinDeTour(p6);
+        assertThat(p6.getAvatarClass(), is("ADVENTURER"));
         
         player p7 = new player("ATA", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
         p7.currenthealthpoints = 2;
