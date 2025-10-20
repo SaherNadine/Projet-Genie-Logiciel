@@ -1,5 +1,7 @@
 package re.forestier.edu;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -153,17 +155,33 @@ public class UnitTests {
        assertThat(result, is(false));
       }
 
-//     @Test
-//     @DisplayName("Test que l'objet est bien ajouté au level up")
-//     void testObjectAddedOnLevelUp() {
-//        player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
-//        int inventorySizeBefore = p.inventory.size();
-//        UpdatePlayer.addXp(p, 10); 
-//        int inventorySizeAfter = p.inventory.size();
-//        assertThat(inventorySizeAfter, is(inventorySizeBefore + 1));
-// }
+    @Test
+    @DisplayName("Test abilities updated on level up - ADVENTURER level 2")
+    void testAbilitiesUpdatedLevel2() {
+      player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
+      assertThat(p.abilities.get("INT"), is(1));
+      assertThat(p.abilities.get("CHA"), is(2));
+      UpdatePlayer.addXp(p, 10);
+      assertThat(p.abilities.get("INT"), is(2));  
+      assertThat(p.abilities.get("CHA"), is(3));  
+}
 
+    @Test
+    @DisplayName("Test abilities updated on level up - ARCHER level 2")
+    void testAbilitiesUpdatedArcherLevel2() {
+      player p = new player("Test", "Test", "ARCHER", 0, new ArrayList<>());
+      UpdatePlayer.addXp(p, 10); 
+      assertThat(p.abilities.get("DEF"), is(1));
+      assertThat(p.abilities.get("CHA"), is(2));
+}
 
+    @Test
+    @DisplayName("Test abilities updated on level up - DWARF level 3")
+    void testAbilitiesUpdatedDwarfLevel3() {
+      player p = new player("Test", "Test", "DWARF", 0, new ArrayList<>());
+      UpdatePlayer.addXp(p, 27); 
+      assertThat(p.abilities.get("ATK"), is(4));
+}
 
     @Test
     @DisplayName("Affichage : constructeur par défaut")
@@ -186,8 +204,12 @@ public class UnitTests {
     void testPlayerKO() {
       player p = new player("Florian", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
       UpdatePlayer up= new UpdatePlayer();
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(outputStream));
       up.majFinDeTour(p);
       assertThat(p.currenthealthpoints, is(0));
+      String output = outputStream.toString();
+      assertThat(output.trim(), is("Le joueur est KO !"));
     }
 
     @Test
@@ -212,6 +234,7 @@ public class UnitTests {
       UpdatePlayer up2= new UpdatePlayer();
       up2.majFinDeTour(p2);
       assertThat(p2.getAvatarClass(), is("DWARF"));
+      assertThat(p2.currenthealthpoints, is(3));
     }
 
     @Test
@@ -280,4 +303,5 @@ public class UnitTests {
         String[] args = {};
         Main.main(args);
     }
+
 }
