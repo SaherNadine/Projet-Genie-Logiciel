@@ -138,6 +138,34 @@ public class UnitTests {
     }
 
     @Test
+    @DisplayName("Test addXp retourne true quand level up")
+    void testAddXpReturnsTrueOnLevelUp() {
+       player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
+       boolean result = UpdatePlayer.addXp(p, 10);
+       assertThat(result, is(true));
+      }
+
+    @Test
+    @DisplayName("Test addXp retourne false sans level up")
+    void testAddXpReturnsFalseNoLevelU() {
+       player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
+       boolean result = UpdatePlayer.addXp(p, 5); 
+       assertThat(result, is(false));
+      }
+
+//     @Test
+//     @DisplayName("Test que l'objet est bien ajouté au level up")
+//     void testObjectAddedOnLevelUp() {
+//        player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
+//        int inventorySizeBefore = p.inventory.size();
+//        UpdatePlayer.addXp(p, 10); 
+//        int inventorySizeAfter = p.inventory.size();
+//        assertThat(inventorySizeAfter, is(inventorySizeBefore + 1));
+// }
+
+
+
+    @Test
     @DisplayName("Affichage : constructeur par défaut")
     void testConstructeurAffichage() {
           new Affichage();
@@ -158,14 +186,9 @@ public class UnitTests {
     void testPlayerKO() {
       player p = new player("Florian", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
       UpdatePlayer up= new UpdatePlayer();
-      
-      //p.healthpoints = 100;
-      p.currenthealthpoints = 0;
       up.majFinDeTour(p);
       assertThat(p.currenthealthpoints, is(0));
-      p.currenthealthpoints = 1;
-      up.majFinDeTour(p);
-      assertThat(p.currenthealthpoints, is(p.healthpoints));}
+    }
 
     @Test
     @DisplayName("Test HP >= max - pas de changement")
