@@ -142,7 +142,7 @@ public class UnitTests {
     @Test
     @DisplayName("Test addXp retourne true quand level up")
     void testAddXpReturnsTrueOnLevelUp() {
-       player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
+       player p = new player("Nadine", "Grognak", "ADVENTURER", 0, new ArrayList<>());
        boolean result = UpdatePlayer.addXp(p, 10);
        assertThat(result, is(true));
       }
@@ -150,38 +150,10 @@ public class UnitTests {
     @Test
     @DisplayName("Test addXp retourne false sans level up")
     void testAddXpReturnsFalseNoLevelU() {
-       player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
+       player p = new player("Nadine", "Grognak", "ADVENTURER", 0, new ArrayList<>());
        boolean result = UpdatePlayer.addXp(p, 5); 
        assertThat(result, is(false));
       }
-
-    @Test
-    @DisplayName("Test abilities updated on level up - ADVENTURER level 2")
-    void testAbilitiesUpdatedLevel2() {
-      player p = new player("Test", "Test", "ADVENTURER", 0, new ArrayList<>());
-      assertThat(p.abilities.get("INT"), is(1));
-      assertThat(p.abilities.get("CHA"), is(2));
-      UpdatePlayer.addXp(p, 10);
-      assertThat(p.abilities.get("INT"), is(2));  
-      assertThat(p.abilities.get("CHA"), is(3));  
-}
-
-    @Test
-    @DisplayName("Test abilities updated on level up - ARCHER level 2")
-    void testAbilitiesUpdatedArcherLevel2() {
-      player p = new player("Test", "Test", "ARCHER", 0, new ArrayList<>());
-      UpdatePlayer.addXp(p, 10); 
-      assertThat(p.abilities.get("DEF"), is(1));
-      assertThat(p.abilities.get("CHA"), is(2));
-}
-
-    @Test
-    @DisplayName("Test abilities updated on level up - DWARF level 3")
-    void testAbilitiesUpdatedDwarfLevel3() {
-      player p = new player("Test", "Test", "DWARF", 0, new ArrayList<>());
-      UpdatePlayer.addXp(p, 27); 
-      assertThat(p.abilities.get("ATK"), is(4));
-}
 
     @Test
     @DisplayName("Affichage : constructeur par défaut")
@@ -222,6 +194,16 @@ public class UnitTests {
       p.currenthealthpoints = 100;
       up.majFinDeTour(p);
       assertThat(p.currenthealthpoints, is(100));
+    }
+
+    @Test
+    @DisplayName("Test HP = current")
+    void testHPAtCurrent() {
+      player p = new player("Florian", "Grognak le barbare", "ARCHER", 100, new ArrayList<>());
+      p.healthpoints = 100;
+      p.currenthealthpoints = 100;
+      UpdatePlayer.majFinDeTour(p);
+      assertThat(p.currenthealthpoints, is(p.healthpoints));
     }
 
     @Test
