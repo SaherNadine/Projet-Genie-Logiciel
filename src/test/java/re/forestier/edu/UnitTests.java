@@ -215,7 +215,6 @@ public class UnitTests {
       p2.healthpoints = 4;
       UpdatePlayer up2= new UpdatePlayer();
       up2.majFinDeTour(p2);
-      assertThat(p2.getAvatarClass(), is("DWARF"));
       assertThat(p2.currenthealthpoints, is(3));
     }
 
@@ -228,25 +227,25 @@ public class UnitTests {
       p3.healthpoints = 4;
       UpdatePlayer up3= new UpdatePlayer();
       up3.majFinDeTour(p3);
-      assertThat(p3.getAvatarClass(), is("ARCHER"));
+      assertThat(p3.currenthealthpoints, is(2));
     }
 
     @Test
     @DisplayName("tester la mise à jour des points de vie Magic Bow avec Archer")
     void testArcherMagicBow() {
-      player p4 = new player("Ikram", "Grognak le barbare", "ARCHER", 100, new ArrayList<>());
+      player p4 = new player("Aya", "Grognak le barbare", "ARCHER", 100, new ArrayList<>());
       p4.inventory.add("Magic Bow");
       p4.currenthealthpoints = 1;
       p4.healthpoints = 4;
       UpdatePlayer up4= new UpdatePlayer();
       up4.majFinDeTour(p4);
-      assertThat(p4.getAvatarClass(), is("ARCHER"));
+      assertThat(p4.currenthealthpoints, is(1));
     }
     
     @Test
     @DisplayName("tester la mise à jour des points de vie DWARF ")
     void testDwarf() {
-      player p5 = new player("walaa", "Grognak le barbare", "DWARF", 100, new ArrayList<>());
+      player p5 = new player("nadine", "Grognak le barbare", "DWARF", 100, new ArrayList<>());
       p5.currenthealthpoints = 1;
       p5.healthpoints = 4;
       UpdatePlayer up5= new UpdatePlayer();
@@ -255,27 +254,38 @@ public class UnitTests {
     }
 
     @Test
-    @DisplayName("tester la mise à jour des points de vie ADVENTURER ")
-    void testAdventurer() {
+    @DisplayName("tester la mise à jour des points de vie ADVENTURER bas niveau (< 3)")
+    void testAdventurerLowLevel() {
       player p6 = new player("Assia", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
       p6.currenthealthpoints = 1;
       p6.healthpoints = 4;
       UpdatePlayer up6= new UpdatePlayer();
       up6.majFinDeTour(p6);
       assertThat(p6.currenthealthpoints, is(2)); 
+    }
+
+    @Test
+    @DisplayName("tester la mise à jour des points de vie ADVENTURER haut niveau (>= 3)")
+    void testAdventurerHighLevel() {
+      player p6 = new player("Assia", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
       p6.currenthealthpoints = 1;
-      up6.addXp(p6,58);
+      p6.healthpoints = 4;
+      UpdatePlayer up6= new UpdatePlayer();
+      up6.addXp(p6,28);
       up6.majFinDeTour(p6);
       assertThat(p6.currenthealthpoints, is(3));
-      assertThat(p6.retrieveLevel(), is(4));
+    }
 
-        
-      player p7 = new player("ATA", "Grognak le barbare", "ADVENTURER", 100, new ArrayList<>());
-      p7.currenthealthpoints = 2;
-      p7.healthpoints = 4;
-      UpdatePlayer up7= new UpdatePlayer();
-      up7.majFinDeTour(p7);
-      assertThat(p7.getAvatarClass(), is("ADVENTURER")); 
+
+    @Test
+    @DisplayName("tester la mise à jour des points de vie à exactement 50% HP - pas de changement")
+    void test() {
+      player p5 = new player("aya", "Grognak le barbare", "DWARF", 100, new ArrayList<>());
+      p5.currenthealthpoints = 5;
+      p5.healthpoints = 10;
+      UpdatePlayer up5= new UpdatePlayer();
+      up5.majFinDeTour(p5);
+      assertThat(p5.currenthealthpoints, is(5));
     }
 
 
