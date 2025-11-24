@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "jacoco"
-    id 'info.solidsoft.pitest' version '1.7.4'
+    id 'info.solidsoft.pitest' version '1.15.0' // Version compatible Java 21
 }
 
 group = 're.forestier.edu'
@@ -12,17 +12,35 @@ repositories {
 }
 
 dependencies {
+    // 1. Mise à jour des dépendances JUnit 5 via le BOM
     testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    testImplementation 'org.pitest:pitest-junit5-plugin:0.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'       // Version 5.10.0 via BOM
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'       // Version 5.10.0 via BOM
+
+    // Dépendance PIT pour JUnit 5 SUPPRIMÉE ici (elle est configurée dans le bloc pitest)
+
     testImplementation("com.approvaltests:approvaltests:15.6.0")
     implementation 'org.hamcrest:hamcrest:2.2'
     implementation("org.freemarker:freemarker:2.3.30")
-
-
 }
 
 test {
     useJUnitPlatform()
+}
+
+// 2. Configuration du plugin PIT
+pitest {
+    // ACTIVE le plugin JUnit 5 et le met à jour vers une version compatible (1.1.0+ est nécessaire pour JUnit 5.8+)
+    // La version recommandée pour une JUnit 5.10.0 est souvent la dernière. 
+    // Utilisons '1.2.2' pour la compatibilité avec la dernière version de PIT Core (1.19.x) que peut utiliser le plugin 1.15.0.
+    junit5PluginVersion = '1.2.2' 
+    
+    // Ajoutez de la mémoire au processus Minion pour éviter l'UNKNOWN_ERROR (problème de ressources)
+    jvmArgs = ['-Xms512m', '-Xmx2048m'] 
+    
+    // Active le mode verbeux pour obtenir plus de détails si l'erreur persiste
+    verbose = true 
+    
+    // Limiter le nombre de threads peut aider à éviter les erreurs de concurrence ou de mémoire
+    threads = 1 
 }
