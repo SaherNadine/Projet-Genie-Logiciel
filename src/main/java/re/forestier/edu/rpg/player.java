@@ -2,14 +2,14 @@ package re.forestier.edu.rpg;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
-public class player {
+public abstract class Player {
     public String playerName;
     public String Avatar_name;
     private String AvatarClass;
 
     public Integer money;
-    private Float __real_money__;
 
 
     public int level;
@@ -17,20 +17,50 @@ public class player {
     public int currenthealthpoints;
     protected int xp;
 
+    protected abstract void initializeAbilities();
+
+    protected abstract HashMap<String, Integer> getAbilitiesForLevel(int level);
+
+    private final static String[] objectList = {"Lookout Ring : Prevents surprise attacks","Scroll of Stupidity : INT-2 when applied to an enemy", "Draupnir : Increases XP gained by 100%", "Magic Charm : Magic +10 for 5 rounds", "Rune Staff of Curse : May burn your ennemies... Or yourself. Who knows?", "Combat Edge : Well, that's an edge", "Holy Elixir : Recover your HP"
+    };
 
     public HashMap<String, Integer> abilities;
     public ArrayList<String> inventory;
-    public player(String playerName, String avatar_name, String avatarClass, int money, ArrayList<String> inventory) {
+
+    public Player(String playerName, String avatar_name, String avatarClass, int money, ArrayList<String> inventory) {
         if (!avatarClass.equals("ARCHER") && !avatarClass.equals("ADVENTURER") && !avatarClass.equals("DWARF") ) {
             return;
         }
 
         this.playerName = playerName;
-        Avatar_name = avatar_name;
-        AvatarClass = avatarClass;
-        this.money = Integer.valueOf(money);
+        this.Avatar_name = avatar_name;
+        this.AvatarClass = avatarClass;
+        this.money = money;
         this.inventory = inventory;
-        this.abilities = UpdatePlayer.abilitiesPerTypeAndLevel().get(AvatarClass).get(1);
+        this.abilities = new HashMap<>();
+        initializeAbilities();
+    }
+
+
+    public boolean addXp(int xp) {
+        int currentLevel = this.retrieveLevel();
+        this.xp += xp;
+        int newLevel = this.retrieveLevel();
+
+        if (newLevel != currentLevel) {
+            // Player leveled-up!
+            // Give a random object
+            Random random = new Random();
+            this.inventory.add(objectList[random.nextInt(objectList.length)]);
+
+            // Add/upgrade abilities to player
+            HashMap<String, Integer> abilities = this.getAbilitiesForLevel(newLevel);
+            abilities.forEach((ability, level) -> {
+                this.abilities.put(ability, abilities.get(ability));
+            });
+            return true;
+        }
+        return false;
     }
 
     public String getAvatarClass () {
@@ -41,12 +71,17 @@ public class player {
         if (money - amount < 0) {
             throw new IllegalArgumentException("Player can't have a negative money!");
         }
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount to remove can't be negative!");
+        }
 
-        money = Integer.parseInt(money.toString()) - amount;
+        money -= amount;
     }
     public void addMoney(int amount) {
-        var value = Integer.valueOf(amount);
-        money = money + (value != null ? value : 0);
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount to add can't be negative!");
+        }
+        money += amount;
     }
     public int retrieveLevel() {
         // (lvl-1) * 10 + round((lvl * xplvl-1)/4)
@@ -73,15 +108,9 @@ public class player {
         return this.xp;
     }
 
-    /*
-    Ингредиенты:
-        Для теста:
-
-            250 г муки
-            125 г сливочного масла (холодное)
-            70 г сахара
-            1 яйцо
-            1 щепотка соли
-     */
+     public void updateAbilitiesForLevel(int newLevel) {
+        HashMap<String, Integer> newAbilities = getAbilitiesForLevel(newLevel);
+        newAbilities.forEach((ability, value) -> abilities.put(ability, value));
+    }
 
 }
