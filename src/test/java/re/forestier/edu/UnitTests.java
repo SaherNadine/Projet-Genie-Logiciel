@@ -6,17 +6,19 @@ import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import re.forestier.edu.rpg.Adventurer;
 import re.forestier.edu.rpg.Affichage;
-import re.forestier.edu.rpg.Archer;
-import re.forestier.edu.rpg.Dwarf;
 import re.forestier.edu.rpg.UpdatePlayer;
 import re.forestier.edu.rpg.Player;
+import re.forestier.edu.rpg.Adventurer;
+import re.forestier.edu.rpg.Archer;
+import re.forestier.edu.rpg.Dwarf;
 
 public class UnitTests {
 
@@ -31,6 +33,7 @@ public class UnitTests {
     @Test
     @DisplayName("Class Avatar ")
     void testAvatar() {
+
         Player p2 = new Archer("Aya", "Grognak", 10, new ArrayList<>());
         assertThat(p2.playerName, is("Aya"));
 
@@ -42,7 +45,6 @@ public class UnitTests {
     @DisplayName("Impossible to have negative money")
     void testNegativeMoney() {
         Player p = new Adventurer("Florian", "Grognak le barbare", 100, new ArrayList<>());
-        
         assertThrows(IllegalArgumentException.class, () -> p.removeMoney(200));
     }
 
@@ -140,7 +142,7 @@ public class UnitTests {
     @DisplayName("Test addXp retourne false sans level up")
     void testAddXpReturnsFalseNoLevelU() {
        Player p = new Adventurer("Nadine", "Grognak", 0, new ArrayList<>());
-       boolean result = p.addXp( 5); 
+       boolean result = p.addXp(5); 
        assertThat(result, is(false));
       }
 
@@ -158,7 +160,7 @@ public class UnitTests {
       p.inventory.add("Épée");
 
       String texte = Affichage.afficherJoueur(p);
-    }  
+    } 
 
     @Test
     @DisplayName("Test HP à 0 - joueur KO")
@@ -177,7 +179,7 @@ public class UnitTests {
     @DisplayName("Test HP >= max - pas de changement")
     void testHPAtMax() {
       Player p = new Adventurer("Florian", "Grognak le barbare", 100, new ArrayList<>());
-      UpdatePlayer up= new UpdatePlayer();
+      UpdatePlayer up = new UpdatePlayer();
 
       p.healthpoints = 100;
       p.currenthealthpoints = 100;
@@ -214,7 +216,7 @@ public class UnitTests {
       p3.inventory.add("Holy Elixir");
       p3.currenthealthpoints = 1;
       p3.healthpoints = 4;
-      UpdatePlayer up3= new UpdatePlayer();
+      UpdatePlayer up3 = new UpdatePlayer();
       up3.majFinDeTour(p3);
       assertThat(p3.currenthealthpoints, is(2));
     }
@@ -226,7 +228,7 @@ public class UnitTests {
       p4.inventory.add("Magic Bow");
       p4.currenthealthpoints = 1;
       p4.healthpoints = 4;
-      UpdatePlayer up4= new UpdatePlayer();
+      UpdatePlayer up4 = new UpdatePlayer();
       up4.majFinDeTour(p4);
       assertThat(p4.currenthealthpoints, is(1));
     }
@@ -259,7 +261,7 @@ public class UnitTests {
       Player p6 = new Adventurer("Assia", "Grognak le barbare", 100, new ArrayList<>());
       p6.currenthealthpoints = 1;
       p6.healthpoints = 4;
-      UpdatePlayer up6= new UpdatePlayer();
+      UpdatePlayer up6 = new UpdatePlayer();
       p6.addXp(28);
       up6.majFinDeTour(p6);
       assertThat(p6.currenthealthpoints, is(3));
