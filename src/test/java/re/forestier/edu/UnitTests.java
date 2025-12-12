@@ -286,7 +286,6 @@ public class UnitTests {
         Main.main(args);
     }
 
-
     @Test
     void testAdventurerLevel2AbilitiesUpdate() {
        Player p = new Adventurer("Nadine", "Hero", 0, new ArrayList<>());
