@@ -287,4 +287,79 @@ public class UnitTests {
         Main.main(args);
     }
 
+    @Test
+    void testAdventurerLevel2AbilitiesUpdate() {
+       Player p = new Adventurer("Nadine", "Hero", 0, new ArrayList<>());
+    
+       assertThat(p.abilities.get("INT"), is(1));
+       assertThat(p.abilities.get("CHA"), is(2));
+    
+       p.addXp(10);
+    
+       assertThat(p.abilities.get("INT"), is(2));
+       assertThat(p.abilities.get("CHA"), is(3));
+}
+    @Test
+    @DisplayName("Test création Gobelin")
+    void testGoblinCreation() {
+        Player p = new Goblin("Nadine", "Sneaky Goblin", 50, new ArrayList<>());
+    
+        assertThat(p.playerName, is("Nadine"));
+        assertThat(p.getAvatarClass(), is("GOBLIN"));
+}
+
+    @Test
+    @DisplayName("Test capacités initiales Gobelin niveau 1")
+    void testGoblinLevel1Abilities() {
+        Player p = new Goblin("Nadine", "Sneaky Goblin", 50, new ArrayList<>());
+    
+        assertThat(p.abilities.get("INT"), is(2));
+        assertThat(p.abilities.get("ATK"), is(2));
+        assertThat(p.abilities.get("ALC"), is(1));
+}
+
+     @Test
+     @DisplayName("Test montée niveau 2 Gobelin")
+     void testGoblinLevel2Abilities() {
+        Player p = new Goblin("Nadine", "Sneaky Goblin", 50, new ArrayList<>());
+    
+        p.addXp(10);
+    
+        assertThat(p.abilities.get("ATK"), is(3));
+        assertThat(p.abilities.get("ALC"), is(4));
+}
+
+     @Test
+     @DisplayName("Test montée niveau 3 Gobelin")
+     void testGoblinLevel3Abilities() {
+        Player p = new Goblin("Nadine", "Sneaky Goblin", 50, new ArrayList<>());
+    
+        p.addXp(27); 
+    
+        assertThat(p.abilities.get("VIS"), is(1));
+}
+
+
+     @Test
+     @DisplayName("Test montée niveau 4 Gobelin")
+     void testGoblinLevel4Abilities() {
+        Player p = new Goblin("Nadine", "Sneaky Goblin", 50, new ArrayList<>());
+    
+        p.addXp(57); 
+    
+        assertThat(p.abilities.get("DEF"), is(1));
+}
+
+    @Test
+    @DisplayName("Test montée niveau 5 Gobelin")
+    void testGoblinLevel5Abilities() {
+        Player p = new Goblin("Nadine", "Sneaky Goblin", 50, new ArrayList<>());
+    
+        p.addXp(111); 
+    
+        assertThat(p.abilities.get("DEF"), is(2));
+        assertThat(p.abilities.get("ATK"), is(4));
+}
+
+
 }
