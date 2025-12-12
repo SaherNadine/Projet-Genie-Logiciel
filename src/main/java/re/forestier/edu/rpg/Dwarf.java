@@ -26,11 +26,6 @@ public class Dwarf extends Player {
         HashMap<String, Integer> levelAbilities = new HashMap<>();
         
         switch (level) {
-            case 1:
-                levelAbilities.put("ALC", 4);
-                levelAbilities.put("INT", 1);
-                levelAbilities.put("ATK", 3);
-                break;
             case 2:
                 levelAbilities.put("DEF", 1);
                 levelAbilities.put("ALC", 5);

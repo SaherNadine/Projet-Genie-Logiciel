@@ -27,12 +27,6 @@ public class Archer extends Player {
         HashMap<String, Integer> levelAbilities = new HashMap<>();
         
         switch (level) {
-            case 1:
-                levelAbilities.put("INT", 1);
-                levelAbilities.put("ATK", 3);
-                levelAbilities.put("CHA", 1);
-                levelAbilities.put("VIS", 3);
-                break;
             case 2:
                 levelAbilities.put("DEF", 1);
                 levelAbilities.put("CHA", 2);

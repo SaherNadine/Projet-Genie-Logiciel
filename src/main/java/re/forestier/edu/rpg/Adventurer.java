@@ -27,12 +27,6 @@ public class Adventurer extends Player {
         HashMap<String, Integer> levelAbilities = new HashMap<>();
         
         switch (level) {
-            case 1:
-                levelAbilities.put("INT", 1);
-                levelAbilities.put("DEF", 1);
-                levelAbilities.put("ATK", 3);
-                levelAbilities.put("CHA", 2);
-                break;
             case 2:
                 levelAbilities.put("INT", 2);
                 levelAbilities.put("CHA", 3);

@@ -28,7 +28,7 @@ public abstract class Player {
     public ArrayList<String> inventory;
 
     public Player(String playerName, String avatar_name, String avatarClass, int money, ArrayList<String> inventory) {
-        if (!avatarClass.equals("ARCHER") && !avatarClass.equals("ADVENTURER") && !avatarClass.equals("DWARF") ) {
+        if (!avatarClass.equals("ARCHER") && !avatarClass.equals("ADVENTURER") && !avatarClass.equals("DWARF") && !avatarClass.equals("GOBLIN") ) {
             return;
         }
 
