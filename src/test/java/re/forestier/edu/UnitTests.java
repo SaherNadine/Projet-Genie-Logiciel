@@ -326,6 +326,39 @@ public class UnitTests {
 
 
     @Test
+    @DisplayName("Test montée niveau 2 Archer")
+    void testArcherLevel2Abilities() {
+       Player p = new Archer("Nadine", "Hunter", 50, new ArrayList<>());
+       p.addXp(10); 
+       assertThat(p.abilities.get("DEF"), is(1));
+       assertThat(p.abilities.get("CHA"), is(2));
+    }
+
+    @Test
+    @DisplayName("Test montée niveau 3 Archer")
+    void testArcherLevel3Abilities() {
+       Player p = new Archer("Nadine", "Hunter", 50, new ArrayList<>());
+       p.addXp(27); 
+       assertThat(p.abilities.get("ATK"), is(3));
+    }
+
+    @Test
+    @DisplayName("Test montée niveau 4 Archer")
+    void testArcherLevel4Abilities() {
+       Player p = new Archer("Nadine", "Hunter", 50, new ArrayList<>());
+       p.addXp(57); 
+       assertThat(p.abilities.get("DEF"), is(2));
+    }
+
+    @Test
+    @DisplayName("Test montée niveau 5 Archer")
+    void testArcherLevel5Abilities() {
+       Player p = new Archer("Nadine", "Hunter", 50, new ArrayList<>());
+       p.addXp(111); 
+       assertThat(p.abilities.get("ATK"), is(4));
+    }
+
+    @Test
     void testAdventurerLevel2AbilitiesUpdate() {
        Player p = new Adventurer("Nadine", "Hero", 0, new ArrayList<>());
     
