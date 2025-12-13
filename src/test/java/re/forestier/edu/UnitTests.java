@@ -3,11 +3,13 @@ package re.forestier.edu;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -285,6 +287,26 @@ public class UnitTests {
         String[] args = {};
         Main.main(args);
     }
+
+
+    @Test
+    @DisplayName("Test classe invalide lance exception")
+    void testInvalidClassThrowsException() {
+        try {
+            new Player("Nadine", "Hero", "BIZZARE", 100, new ArrayList<>()) {
+               @Override
+               protected void initializeAbilities() {}
+            
+               @Override
+               protected HashMap<String, Integer> getAbilitiesForLevel(int level) {
+                  return new HashMap<>();
+              }
+            };
+            fail("Une exception devrait être lancée");
+        } catch (IllegalArgumentException e) {
+           assertThat(e.getMessage(), is("Unknown avatar class: BIZZARE"));
+          }
+}
 
     @Test
     void testAdventurerLevel2AbilitiesUpdate() {
