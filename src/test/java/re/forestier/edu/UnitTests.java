@@ -306,7 +306,24 @@ public class UnitTests {
         } catch (IllegalArgumentException e) {
            assertThat(e.getMessage(), is("Unknown avatar class: BIZZARE"));
           }
-}
+    }
+
+    @Test
+    @DisplayName("Test montée niveau 4 Dwarf")
+    void testDwarfLevel4Abilities() {
+        Player p = new Dwarf("Nadine", "Smith", 50, new ArrayList<>());
+        p.addXp(57);
+        assertThat(p.abilities.get("DEF"), is(2));
+    }
+
+    @Test
+    @DisplayName("Test montée niveau 5 Dwarf")
+    void testDwarfLevel5Abilities() {
+        Player p = new Dwarf("Nadine", "Smith", 50, new ArrayList<>());
+        p.addXp(111);
+        assertThat(p.abilities.get("CHA"), is(1));
+    }
+
 
     @Test
     void testAdventurerLevel2AbilitiesUpdate() {
