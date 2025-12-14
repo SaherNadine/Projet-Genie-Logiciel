@@ -50,6 +50,36 @@ public class UnitTests {
     }
 
     @Test
+    @DisplayName("Test removeMoney avec montant négatif")
+    void testRemoveNegativeAmount() {
+        Player p = new Adventurer("Nadine", "Hero", 100, new ArrayList<>());
+        assertThrows(IllegalArgumentException.class, () -> p.removeMoney(-10));
+    }
+
+    @Test
+    @DisplayName("Test removeMoney avec montant 0")
+    void testRemoveZeroAmount() {
+       Player p = new Adventurer("Nadine", "Hero", 100, new ArrayList<>());
+       p.removeMoney(0);
+       assertThat(p.money, is(100));
+     }
+
+    @Test
+    @DisplayName("Test addMoney avec montant 0")
+    void testAddZeroAmount() {
+       Player p = new Adventurer("Nadine", "Hero", 100, new ArrayList<>());
+       p.addMoney(0);
+       assertThat(p.money, is(100));
+     }
+
+    @Test
+    @DisplayName("Test addMoney avec montant négatif")
+    void testAddNegativeAmount() {
+       Player p = new Adventurer("Nadine", "Hero", 100, new ArrayList<>());
+       assertThrows(IllegalArgumentException.class, () -> p.addMoney(-10));
+     }
+
+    @Test
     @DisplayName("Positive money")
     void testPositiveMoney() {
         Player p1 = new Adventurer("Nadine", "Grognak", 100, new ArrayList<>());
@@ -151,6 +181,16 @@ public class UnitTests {
     @DisplayName("Affichage : constructeur par défaut")
     void testConstructeurAffichage() {
           new Affichage();
+}
+
+    @Test
+    @DisplayName("Test plafonnerVie quand HP dépasse le max")
+    void testPlafonnerVieDepasse() {
+        Player p = new Adventurer("Nadine", "Hero", 100, new ArrayList<>());
+        p.healthpoints = 100;
+        p.currenthealthpoints = 105;  
+        UpdatePlayer.majFinDeTour(p);
+        assertThat(p.currenthealthpoints, is(100));
 }
 
     @Test
@@ -309,6 +349,23 @@ public class UnitTests {
     }
 
     @Test
+    @DisplayName("Test montée niveau 2 Dwarf")
+    void testDwarfLevel2Abilities() {
+        Player p = new Dwarf("Nadine", "Smith", 50, new ArrayList<>());
+        p.addXp(10);
+        assertThat(p.abilities.get("DEF"), is(1));
+        assertThat(p.abilities.get("ALC"), is(5));
+    }
+
+    @Test
+    @DisplayName("Test montée niveau 3 Dwarf")
+    void testDwarfLevel3Abilities() {
+        Player p = new Dwarf("Nadine", "Smith", 50, new ArrayList<>());
+        p.addXp(27);
+        assertThat(p.abilities.get("ATK"), is(4));
+    }
+
+    @Test
     @DisplayName("Test montée niveau 4 Dwarf")
     void testDwarfLevel4Abilities() {
         Player p = new Dwarf("Nadine", "Smith", 50, new ArrayList<>());
@@ -339,9 +396,11 @@ public class UnitTests {
     void testArcherLevel3Abilities() {
        Player p = new Archer("Nadine", "Hunter", 50, new ArrayList<>());
        p.addXp(27); 
+       assertThat(p.retrieveLevel(), is(3));
        assertThat(p.abilities.get("ATK"), is(3));
     }
 
+    
     @Test
     @DisplayName("Test montée niveau 4 Archer")
     void testArcherLevel4Abilities() {
