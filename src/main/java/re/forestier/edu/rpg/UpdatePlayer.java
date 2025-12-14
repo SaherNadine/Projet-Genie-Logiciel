@@ -41,10 +41,13 @@ public class UpdatePlayer {
             System.out.println("Le joueur est KO !");
             return;
         }
-        if(player.currenthealthpoints >= player.healthpoints){
+        regenererSiSousLaMoitie(player);
+
+        if(player.currenthealthpoints > player.healthpoints){
+            player.currenthealthpoints = player.healthpoints;
             return;  
         }
-        regenererSiSousLaMoitie(player);
+        
         
     }
 }
