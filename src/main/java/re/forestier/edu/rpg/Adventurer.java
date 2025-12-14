@@ -10,11 +10,6 @@ public class Adventurer extends Player {
     }
 
     @Override
-    public String getAvatarClass() {
-        return "ADVENTURER";
-    }
-
-    @Override
     protected void initializeAbilities() {
         abilities.put("INT", 1);
         abilities.put("DEF", 1);
@@ -26,22 +21,20 @@ public class Adventurer extends Player {
     protected HashMap<String, Integer> getAbilitiesForLevel(int level) {
         HashMap<String, Integer> levelAbilities = new HashMap<>();
         
-        switch (level) {
-            case 2:
-                levelAbilities.put("INT", 2);
-                levelAbilities.put("CHA", 3);
-                break;
-            case 3:
-                levelAbilities.put("ATK", 5);
-                levelAbilities.put("ALC", 1);
-                break;
-            case 4:
-                levelAbilities.put("DEF", 3);
-                break;
-            case 5:
-                levelAbilities.put("VIS", 1);
-                levelAbilities.put("DEF", 4);
-                break;
+        if (level == 2) {
+          levelAbilities.put("INT", 2);
+          levelAbilities.put("CHA", 3);
+        } 
+        if (level == 3) {
+           levelAbilities.put("ATK", 5);
+           levelAbilities.put("ALC", 1);
+        } 
+        if (level == 4) {
+           levelAbilities.put("DEF", 3);
+        }
+        if (level == 5) {
+           levelAbilities.put("VIS", 1);
+           levelAbilities.put("DEF", 4);
         }
         
         return levelAbilities;

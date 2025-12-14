@@ -10,11 +10,6 @@ public class Goblin extends Player {
     }
 
     @Override
-    public String getAvatarClass() {
-        return "GOBLIN";
-    }
-
-    @Override
     protected void initializeAbilities() {
         abilities.put("INT", 2);
         abilities.put("ATK", 2);
@@ -25,23 +20,21 @@ public class Goblin extends Player {
     protected HashMap<String, Integer> getAbilitiesForLevel(int level) {
         HashMap<String, Integer> levelAbilities = new HashMap<>();
         
-        switch (level) {
-            case 2:
-                levelAbilities.put("ATK", 3);
-                levelAbilities.put("ALC", 4);
-                break;
-            case 3:
-                levelAbilities.put("VIS", 1);
-                break;
-            case 4:
-                levelAbilities.put("DEF", 1);
-                break;
-            case 5:
-                levelAbilities.put("DEF", 2);
-                levelAbilities.put("ATK", 4);
-                break;
+        if (level == 2) {
+            levelAbilities.put("ATK", 3);
+            levelAbilities.put("ALC", 4);
+        } 
+        if (level == 3) {
+            levelAbilities.put("VIS", 1);
+        } 
+        if (level == 4) {
+            levelAbilities.put("DEF", 1);
+        } 
+        if (level == 5) {
+            levelAbilities.put("DEF", 2);
+            levelAbilities.put("ATK", 4);
         }
-        
+
         return levelAbilities;
     }
 }

@@ -10,11 +10,6 @@ public class Dwarf extends Player {
     }
 
     @Override
-    public String getAvatarClass() {
-        return "DWARF";
-    }
-
-    @Override
     protected void initializeAbilities() {
         abilities.put("ALC", 4);
         abilities.put("INT", 1);
@@ -25,20 +20,18 @@ public class Dwarf extends Player {
     protected HashMap<String, Integer> getAbilitiesForLevel(int level) {
         HashMap<String, Integer> levelAbilities = new HashMap<>();
         
-        switch (level) {
-            case 2:
-                levelAbilities.put("DEF", 1);
-                levelAbilities.put("ALC", 5);
-                break;
-            case 3:
-                levelAbilities.put("ATK", 4);
-                break;
-            case 4:
-                levelAbilities.put("DEF", 2);
-                break;
-            case 5:
-                levelAbilities.put("CHA", 1);
-                break;
+        if (level == 2) {
+            levelAbilities.put("DEF", 1);
+            levelAbilities.put("ALC", 5);
+        } 
+        if (level == 3) {
+            levelAbilities.put("ATK", 4);
+        } 
+        if (level == 4) {
+            levelAbilities.put("DEF", 2);
+        }
+        if (level == 5) {
+            levelAbilities.put("CHA", 1);
         }
         
         return levelAbilities;
