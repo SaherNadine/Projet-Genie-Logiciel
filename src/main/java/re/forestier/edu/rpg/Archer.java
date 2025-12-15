@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Archer extends Player {
     
-    public Archer(String playerName, String avatar_name, int money, ArrayList<String> inventory) {
+    public Archer(String playerName, String avatar_name, int money, ArrayList<Item> inventory) {
         super(playerName, avatar_name,"ARCHER", money, inventory);
     }
 

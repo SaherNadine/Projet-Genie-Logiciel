@@ -15,14 +15,14 @@ public class UpdatePlayer {
         }
             
         if (classe.equals("DWARF")) {
-            if(player.inventory.contains("Holy Elixir")) {
+            if(hasItemByName(player, "Holy Elixir")) {
                 player.currenthealthpoints += 1;
             }
             player.currenthealthpoints += 1;
         }
         if (classe.equals("ARCHER")) {    
             player.currenthealthpoints += 1;
-            if(player.inventory.contains("Magic Bow")) {
+            if(hasItemByName(player, "Magic Bow")) {
                 player.currenthealthpoints += player.currenthealthpoints / 8 - 1;
             }
         }
@@ -47,7 +47,15 @@ public class UpdatePlayer {
             player.currenthealthpoints = player.healthpoints;
             return;  
         }
-        
-        
+              
+    }
+
+    private static boolean hasItemByName(Player player, String itemName) {
+        for (Item item : player.inventory) {
+            if (item.getName().equals(itemName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

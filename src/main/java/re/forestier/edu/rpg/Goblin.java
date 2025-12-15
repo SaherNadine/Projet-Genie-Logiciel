@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Goblin extends Player {
     
-    public Goblin(String playerName, String avatar_name, int money, ArrayList<String> inventory) {
+    public Goblin(String playerName, String avatar_name, int money, ArrayList<Item> inventory) {
         super(playerName, avatar_name,"GOBLIN", money, inventory);
     }
 

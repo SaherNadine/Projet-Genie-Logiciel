@@ -6,13 +6,13 @@ import java.util.Random;
 
 public abstract class Player {
     public String playerName;
-    public String Avatar_name;
-    private String AvatarClass;
+    public String avatarName;
+    private String avatarClass;
+
+     private int maxWeight = 100;
 
     public Integer money;
 
-
-    public int level;
     public int healthpoints;
     public int currenthealthpoints;
     protected int xp;
@@ -21,24 +21,46 @@ public abstract class Player {
 
     protected abstract HashMap<String, Integer> getAbilitiesForLevel(int level);
 
-    private final static String[] objectList = {"Lookout Ring : Prevents surprise attacks","Scroll of Stupidity : INT-2 when applied to an enemy", "Draupnir : Increases XP gained by 100%", "Magic Charm : Magic +10 for 5 rounds", "Rune Staff of Curse : May burn your ennemies... Or yourself. Who knows?", "Combat Edge : Well, that's an edge", "Holy Elixir : Recover your HP"
+    private final static Item[] objectList = {
+        new Item("Lookout Ring", "Prevents surprise attacks", 1, 50),
+        new Item("Scroll of Stupidity", "INT-2 when applied to an enemy", 1, 30),
+        new Item("Draupnir", "Increases XP gained by 100%", 2, 200),
+        new Item("Magic Charm", "Magic +10 for 5 rounds", 1, 80),
+        new Item("Rune Staff of Curse", "May burn your enemies... Or yourself. Who knows?", 5, 150),
+        new Item("Combat Edge", "Well, that's an edge", 3, 60),
+        new Item("Holy Elixir", "Recover your HP", 1, 100)
     };
 
     public HashMap<String, Integer> abilities;
-    public ArrayList<String> inventory;
+    public ArrayList<Item> inventory;
 
-    public Player(String playerName, String avatar_name, String avatarClass, int money, ArrayList<String> inventory) {
+
+    private final static HashMap<Integer, Integer> LEVEL_THRESHOLDS = new HashMap<>() {{
+        // (lvl-1) * 10 + round((lvl * xplvl-1)/4)
+        put(2, 10);   // 1*10 + ((2*0)/4)
+        put(3, 27);   // 2*10 + ((3*10)/4)
+        put(4, 57);   // 3*10 + ((4*27)/4)
+        put(5, 111);  // 4*10 + ((5*57)/4)
+    }};
+
+    public Player(String playerName, String avatar_name, String avatarClass, int money, ArrayList<Item> inventory) {
         if (!avatarClass.equals("ARCHER") && !avatarClass.equals("ADVENTURER") && !avatarClass.equals("DWARF") && !avatarClass.equals("GOBLIN") ) {
             return;
         }
 
         this.playerName = playerName;
-        this.Avatar_name = avatar_name;
-        this.AvatarClass = avatarClass;
+        this.avatarName = avatar_name;
+        this.avatarClass = avatarClass;
         this.money = money;
         this.inventory = inventory;
         this.abilities = new HashMap<>();
         initializeAbilities();
+    }
+
+
+    public void updateAbilitiesForLevel(int newLevel) {
+        HashMap<String, Integer> newAbilities = getAbilitiesForLevel(newLevel);
+        newAbilities.forEach((ability, value) -> abilities.put(ability, value));
     }
 
 
@@ -51,20 +73,18 @@ public abstract class Player {
             // Player leveled-up!
             // Give a random object
             Random random = new Random();
-            this.inventory.add(objectList[random.nextInt(objectList.length)]);
+            Item randomItem = objectList[random.nextInt(objectList.length)];
+            addItem(randomItem);
 
             // Add/upgrade abilities to player
-            HashMap<String, Integer> abilities = this.getAbilitiesForLevel(newLevel);
-            abilities.forEach((ability, level) -> {
-                this.abilities.put(ability, abilities.get(ability));
-            });
+            updateAbilitiesForLevel(newLevel);
             return true;
         }
         return false;
     }
 
     public String getAvatarClass () {
-        return AvatarClass;
+        return avatarClass;
     }
 
     public void removeMoney(int amount) throws IllegalArgumentException {
@@ -83,24 +103,13 @@ public abstract class Player {
         }
         money += amount;
     }
+        
     public int retrieveLevel() {
-        // (lvl-1) * 10 + round((lvl * xplvl-1)/4)
-        HashMap<Integer, Integer> levels = new HashMap<>();
-        levels.put(2,10); // 1*10 + ((2*0)/4)
-        levels.put(3,27); // 2*10 + ((3*10)/4)
-        levels.put(4,57); // 3*10 + ((4*27)/4)
-        levels.put(5,111); // 4*10 + ((5*57)/4)
         //TODO : ajouter les prochains niveaux
-
-        if (xp < levels.get(2)) {
-            return 1;
-        }
-        else if (xp < levels.get(3)) {return 2;
-        }
-        if (xp < levels.get(4)) {
-            return 3;
-        }
-        if (xp < levels.get(5)) return 4;
+        if (xp < LEVEL_THRESHOLDS.get(2)) return 1;
+        if (xp < LEVEL_THRESHOLDS.get(3)) return 2;
+        if (xp < LEVEL_THRESHOLDS.get(4)) return 3;
+        if (xp < LEVEL_THRESHOLDS.get(5)) return 4;
         return 5;
     }
 
@@ -108,9 +117,111 @@ public abstract class Player {
         return this.xp;
     }
 
-     public void updateAbilitiesForLevel(int newLevel) {
-        HashMap<String, Integer> newAbilities = getAbilitiesForLevel(newLevel);
-        newAbilities.forEach((ability, value) -> abilities.put(ability, value));
+
+    public boolean addItem(Item item) {
+        if (getCurrentWeight() + item.getWeight() > maxWeight) {
+            return false; // Poids maximal dépassé
+        }
+        inventory.add(item);
+        return true;
     }
 
+    public void sellItem(int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= inventory.size()) {
+            throw new IndexOutOfBoundsException("Invalid inventory index");
+        }
+        Item item = inventory.remove(index);
+        addMoney(item.getValue());
+    }
+
+    public int getCurrentWeight() {
+        int totalWeight = 0;
+        for (Item item : inventory) {
+            totalWeight += item.getWeight();
+        }
+        return totalWeight;
+    }
+
+    public int getMaxWeight() {
+        return maxWeight;
+    }
+    
+    public int getInventorySize() {
+        return inventory.size();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Joueur: ").append(playerName).append("\n");
+        sb.append("Avatar: ").append(avatarName).append("\n");
+        sb.append("Classe: ").append(getAvatarClass()).append("\n");
+        sb.append("Niveau: ").append(retrieveLevel()).append("\n");
+        sb.append("XP: ").append(xp).append("\n");
+        sb.append("Argent: ").append(money).append(" pièces d'or\n");
+        sb.append("Poids actuel: ").append(getCurrentWeight())
+          .append("/").append(maxWeight).append(" kg\n\n");
+        
+        if (!abilities.isEmpty()) {
+            sb.append("Capacités:\n");
+            abilities.forEach((ability, abilityLevel) -> {
+                sb.append("- ").append(ability).append(": Niveau ")
+                  .append(abilityLevel).append("\n");
+            });
+            sb.append("\n");
+        }
+        
+        sb.append("Inventaire:\n");
+        if (inventory.isEmpty()) {
+            sb.append("(vide)\n");
+        } else {
+            for (Item item : inventory) {
+                sb.append("- ").append(item.getName()).append(" - ")
+                  .append(item.getDescription()).append(" (Poids: ")
+                  .append(item.getWeight()).append("kg, Valeur: ")
+                  .append(item.getValue()).append(" pièces)\n");
+            }
+        }
+        
+        return sb.toString();
+    }
+
+    public String toMarkdown() {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("# Joueur: ").append(playerName).append("\n\n");
+
+        sb.append("## Informations\n\n");
+        sb.append("* **Avatar:** ").append(avatarName).append("\n");
+        sb.append("* **Classe:** ").append(getAvatarClass()).append("\n");
+        sb.append("* **Niveau:** ").append(retrieveLevel()).append("\n");
+        sb.append("* **XP:** ").append(xp).append("\n");
+        sb.append("* **Argent:** ").append(money).append(" pièces d'or\n");
+        sb.append("* **Poids actuel:** ").append(getCurrentWeight())
+          .append("/").append(maxWeight).append(" kg\n\n");
+
+        if (!abilities.isEmpty()) {
+            sb.append("## Capacités\n\n");
+            abilities.forEach((ability, abilityLevel) -> {
+                sb.append("* **").append(ability).append(":** Niveau ")
+                  .append(abilityLevel).append("\n");
+            });
+            sb.append("\n");
+        }
+
+        sb.append("## Inventaire\n\n");
+        if (inventory.isEmpty()) {
+            sb.append("*Vide*\n");
+        } else {
+            for (Item item : inventory) {
+                sb.append("* **").append(item.getName()).append("** - *")
+                  .append(item.getDescription()).append("* (Poids: ")
+                  .append(item.getWeight()).append("kg, Valeur: ")
+                  .append(item.getValue()).append(" pièces)\n");
+            }
+        }
+        
+        return sb.toString();
+    }
 }
+

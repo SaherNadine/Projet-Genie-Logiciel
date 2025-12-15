@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Dwarf extends Player {
     
-    public Dwarf(String playerName, String avatar_name, int money, ArrayList<String> inventory) {
+    public Dwarf(String playerName, String avatar_name, int money, ArrayList<Item> inventory) {
         super(playerName, avatar_name,"DWARF", money, inventory);
     }
 
