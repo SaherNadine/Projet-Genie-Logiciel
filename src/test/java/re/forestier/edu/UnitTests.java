@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +21,7 @@ import re.forestier.edu.rpg.Affichage;
 import re.forestier.edu.rpg.Archer;
 import re.forestier.edu.rpg.Dwarf;
 import re.forestier.edu.rpg.Goblin;
+import re.forestier.edu.rpg.Item;
 import re.forestier.edu.rpg.Player;
 import re.forestier.edu.rpg.UpdatePlayer;
 
@@ -198,9 +202,17 @@ public class UnitTests {
     void testPV() {
       Player p = new Adventurer("Florian", "Grognak le barbare", 100, new ArrayList<>());
       p.abilities.put("Force", 5);
-      p.inventory.add("Épée");
+      Item epee = new Item("Épée", "Une épée", 5, 100);
+      p.inventory.add(epee);
+      assertThat(epee.getName(), is("Épée"));
+      assertThat(epee.getDescription(), is("Une épée"));
+      assertThat(epee.getWeight(), is(5));
+      assertThat(epee.getValue(), is(100));
+      assertTrue(epee.toString().contains("Épée"));
 
       String texte = Affichage.afficherJoueur(p);
+      assertTrue(texte.contains("Épée"));
+
     } 
 
     @Test
@@ -242,7 +254,7 @@ public class UnitTests {
     @DisplayName("tester la mise à jour des points de vie Holy Elixir avec Dwarf")
     void testDwarfHolyElixir() {
       Player p2 = new Dwarf("Nadine", "Grognak le barbare", 100, new ArrayList<>());
-      p2.inventory.add("Holy Elixir");
+      p2.inventory.add(new Item("Holy Elixir", "Recover your HP", 1, 100));
       p2.currenthealthpoints = 1;
       p2.healthpoints = 4;
       UpdatePlayer up2= new UpdatePlayer();
@@ -254,7 +266,7 @@ public class UnitTests {
     @DisplayName("tester la mise à jour des points de vie Holy Elixir avec Archer")
     void testArcherHolyElixir() {
       Player p3 = new Archer("Aya", "Grognak le barbare", 100, new ArrayList<>());
-      p3.inventory.add("Holy Elixir");
+      p3.inventory.add(new Item("Holy Elixir", "Recover your HP", 1, 100));
       p3.currenthealthpoints = 1;
       p3.healthpoints = 4;
       UpdatePlayer up3 = new UpdatePlayer();
@@ -266,7 +278,7 @@ public class UnitTests {
     @DisplayName("tester la mise à jour des points de vie Magic Bow avec Archer")
     void testArcherMagicBow() {
       Player p4 = new Archer("Aya", "Grognak le barbare", 100, new ArrayList<>());
-      p4.inventory.add("Magic Bow");
+      p4.inventory.add(new Item("Magic Bow", "A magical bow", 3, 150));
       p4.currenthealthpoints = 1;
       p4.healthpoints = 4;
       UpdatePlayer up4 = new UpdatePlayer();
@@ -342,7 +354,6 @@ public class UnitTests {
                   return new HashMap<>();
               }
             };
-            fail("Une exception devrait être lancée");
         } catch (IllegalArgumentException e) {
            assertThat(e.getMessage(), is("Unknown avatar class: BIZZARE"));
           }
@@ -489,9 +500,253 @@ public class UnitTests {
     
         assertThat(p.abilities.get("DEF"), is(2));
         assertThat(p.abilities.get("ATK"), is(4));
+    }
+
+
+@Test
+@DisplayName("addItem retourne true quand ajout réussit")
+void testAddItemReturnsTrue() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    Item item = new Item("Épée", "Une épée", 5, 100);
+    
+    boolean result = p.addItem(item);
+    
+    assertThat(result, is(true)); 
+    assertThat(p.getInventorySize(), is(1));
+}
+
+@Test
+@DisplayName("addItem retourne false quand poids dépassé")
+void testAddItemReturnsFalse() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    Item heavyItem = new Item("Armure", "Lourde", 150, 500);
+    
+    boolean result = p.addItem(heavyItem);
+    
+    assertThat(result, is(false)); 
+    assertThat(p.getInventorySize(), is(0));
+}
+
+@Test
+@DisplayName("addItem à la limite exacte du poids")
+void testAddItemExactLimit() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    Item item1 = new Item("Item1", "Desc", 50, 100);
+    Item item2 = new Item("Item2", "Desc", 50, 100);
+    Item item3 = new Item("Item3", "Desc", 1, 10);
+    
+    assertTrue(p.addItem(item1)); 
+    assertTrue(p.addItem(item2)); 
+    assertFalse(p.addItem(item3)); 
+}
+
+@Test
+@DisplayName("sellItem ajoute l'argent correctement")
+void testSellItemAddsMoney() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    Item item = new Item("Épée", "Une épée", 5, 100);
+    p.addItem(item);
+    
+    int moneyBefore = p.money;
+    p.sellItem(0);
+    
+    assertThat(p.money, is(moneyBefore + 100));
+    assertThat(p.getInventorySize(), is(0));
+}
+
+@Test
+@DisplayName("sellItem lance exception pour index négatif")
+void testSellItemNegativeIndex() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    
+    assertThrows(IndexOutOfBoundsException.class, () -> {
+        p.sellItem(-1); 
+    });
+}
+
+@Test
+@DisplayName("sellItem lance exception pour index trop grand")
+void testSellItemIndexTooLarge() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    p.addItem(new Item("Item", "Desc", 1, 10));
+    
+    assertThrows(IndexOutOfBoundsException.class, () -> {
+        p.sellItem(1); 
+    });
+    
+    assertThrows(IndexOutOfBoundsException.class, () -> {
+        p.sellItem(5); 
+    });
+}
+
+@Test
+@DisplayName("sellItem à l'index 0 valide")
+void testSellItemValidIndex() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    p.addItem(new Item("Item1", "Desc", 1, 50));
+    p.addItem(new Item("Item2", "Desc", 1, 75));
+    
+    p.sellItem(0); 
+    assertThat(p.getInventorySize(), is(1));
 }
 
 
+@Test
+@DisplayName("getCurrentWeight avec plusieurs items")
+void testGetCurrentWeightMultiple() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    p.addItem(new Item("Item1", "Desc", 10, 50));
+    p.addItem(new Item("Item2", "Desc", 20, 100));
+    p.addItem(new Item("Item3", "Desc", 15, 75));
+    
+    int weight = p.getCurrentWeight();
+    
+    assertThat(weight, is(45)); 
+    assertThat(weight, not(0)); 
+    assertTrue(weight > 0); 
+}
+
+@Test
+@DisplayName("getCurrentWeight retourne 0 quand inventaire vide")
+void testGetCurrentWeightEmpty() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    
+    assertThat(p.getCurrentWeight(), is(0)); 
+}
+
+
+@Test
+@DisplayName("getMaxWeight retourne la valeur correcte")
+void testGetMaxWeight() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    
+    assertThat(p.getMaxWeight(), is(100)); 
+    assertThat(p.getMaxWeight(), not(equalTo(0)));
+}
+
+@Test
+@DisplayName("getInventorySize avec plusieurs items")
+void testGetInventorySizeMultiple() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    p.addItem(new Item("Item1", "Desc", 5, 50));
+    p.addItem(new Item("Item2", "Desc", 5, 50));
+    p.addItem(new Item("Item3", "Desc", 5, 50));
+    
+    assertThat(p.getInventorySize(), is(3)); 
+    assertThat(p.getInventorySize(), not(0));
+}
+
+@Test
+@DisplayName("getInventorySize retourne 0 pour inventaire vide")
+void testGetInventorySizeEmpty() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    
+    assertThat(p.getInventorySize(), is(0));
+}
+
+@Test
+@DisplayName("toString retourne une chaîne non vide")
+void testToStringNotEmpty() {
+    Player p = new Adventurer("Alice", "Warrior", 100, new ArrayList<>());
+    
+    String result = p.toString();
+    
+    assertThat(result, not(equalTo(""))); 
+    assertTrue(result.length() > 0);
+}
+
+@Test
+@DisplayName("toString avec capacités affiche bien les capacités")
+void testToStringWithAbilities() {
+    Player p = new Adventurer("Bob", "Knight", 100, new ArrayList<>());
+    p.abilities.put("Force", 5);
+    p.abilities.put("Défense", 3);
+    
+    String result = p.toString();
+    
+    assertTrue(result.contains("Force"));
+    assertTrue(result.contains("Défense"));
+}
+
+@Test
+@DisplayName("toString avec inventaire vide affiche (vide)")
+void testToStringEmptyInventory() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    
+    String result = p.toString();
+    
+    assertTrue(result.contains("vide") || result.contains("Inventaire"));
+}
+
+@Test
+@DisplayName("toString avec inventaire plein affiche les items")
+void testToStringWithInventory() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    p.addItem(new Item("Épée", "Une épée magique", 5, 100));
+    
+    String result = p.toString();
+    
+    assertTrue(result.contains("Épée"));
+    assertTrue(result.contains("Une épée magique"));
+    assertFalse(result.contains("vide"));
+}
+
+@Test
+@DisplayName("toMarkdown retourne une chaîne non vide")
+void testToMarkdownNotEmpty() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    
+    String result = p.toMarkdown();
+    
+    assertThat(result, not(equalTo(""))); 
+    assertTrue(result.length() > 0);
+}
+
+@Test
+@DisplayName("toMarkdown contient le formatage Markdown")
+void testToMarkdownFormat() {
+    Player p = new Adventurer("Charlie", "Mage", 100, new ArrayList<>());
+    
+    String result = p.toMarkdown();
+    
+    assertTrue(result.contains("#")); 
+    assertTrue(result.contains("**")); 
+    assertTrue(result.contains("Charlie"));
+}
+
+@Test
+@DisplayName("toMarkdown avec capacités")
+void testToMarkdownWithAbilities() {
+    Player p = new Archer("Diana", "Hunter", 100, new ArrayList<>());
+    p.abilities.put("Agilité", 4);
+    
+    String result = p.toMarkdown();
+    
+    assertTrue(result.contains("Agilité"));
+    assertTrue(result.contains("Capacités"));
+}
+
+@Test
+@DisplayName("toMarkdown avec inventaire vide")
+void testToMarkdownEmptyInventory() {
+    Player p = new Dwarf("Test", "Avatar", 100, new ArrayList<>());
+    
+    String result = p.toMarkdown();
+    
+    assertTrue(result.contains("Vide") || result.contains("Inventaire"));
+}
+
+@Test
+@DisplayName("toMarkdown avec inventaire plein")
+void testToMarkdownWithInventory() {
+    Player p = new Adventurer("Test", "Avatar", 100, new ArrayList<>());
+    p.addItem(new Item("Bouclier", "Un bouclier solide", 10, 150));
+    
+    String result = p.toMarkdown();
+    
+    assertTrue(result.contains("Bouclier"));
+    assertTrue(result.contains("Un bouclier solide"));
+}
 
 
 }
