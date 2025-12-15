@@ -1,0 +1,17 @@
+Joueur: Florian
+Avatar: Gnognak le Barbare
+Classe: ADVENTURER
+Niveau: 1
+XP: 0
+Argent: 200 pièces d'or
+Poids actuel: 6/100 kg
+
+Capacités:
+- DEF: Niveau 1
+- ATK: Niveau 3
+- CHA: Niveau 2
+- INT: Niveau 1
+
+Inventaire:
+- Épée Longue - Une épée bien aiguisée (Poids: 5kg, Valeur: 150 pièces)
+- Potion de Vie - Restaure 50 HP (Poids: 1kg, Valeur: 50 pièces)
